@@ -1,0 +1,85 @@
+.formulario{
+    margin-top: 2%;
+    font-size: 30px;
+}
+.dimensiones{
+    width: 600px;
+    margin-left: 30%;
+    text-align: center;
+    margin-bottom: 30px;
+    border: 1px black solid;
+    border-radius: 20px;
+    box-shadow: 5px 5px 5px black;
+}
+.dimensiones h3{
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 40px;
+}
+.dimensiones input{
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+.dimensiones .btn-generales{
+    background-color: transparent;
+    margin-top: 50px;
+    margin-bottom: 100px;
+    font-size: 40px;
+    padding: 10px;
+    border-radius: 30px;
+}
+.dimensiones .btn-generales:hover{
+color: white;
+background-color: black;
+}
+
+.icono-tabla{
+    color: white;
+    background-color: black;
+    width: 250px;
+    border-radius: 1200px;
+    margin-left: 20px;
+    margin-top: 20px;
+    position: sticky;
+    bottom: 20px;
+    left: 30px;
+    font-size: 17px;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 20px;
+    text-align: center;
+
+}
+
+.icono-tabla:hover{
+  background-color: blue;
+}
+
+/* Telefonos moviles*/
+@media (max-width:932px){
+    .dimensiones{
+        width: 350px;
+        margin-left: 1%;
+        text-align: center;
+        margin-bottom: 30px;
+        margin-top: 30px;
+        box-shadow: 0px 0px 0px white;
+        border: 1px white solid;
+    }
+    .formulario{
+        margin-top: 2%;
+        font-size: 30px;
+    }
+    .dimensiones input{
+        border-radius: 20px;
+        
+    }
+    .dimensiones h3{
+        margin-top: 10px;
+        
+        font-size: 30px;
+    }
+    .icono-tabla-mobile{
+     
+    }
+    
+}
