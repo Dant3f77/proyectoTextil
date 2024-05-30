@@ -1,3 +1,12 @@
+.banner {
+    background-color: #5F3128; /* Color de fondo del banner */
+    color: white;             /* Color del texto */
+    text-align: center;       /* Centrar el texto */
+    padding: 15px 0;          /* Espaciado interno del banner */
+    font-size: 24px;          /* Tamaño del texto */
+    font-weight: bold;        /* Negrita */
+}
+
 .formulario{
     margin-top: 2%;
     font-size: 30px;
@@ -78,8 +87,5 @@ background-color: black;
         
         font-size: 30px;
     }
-    .icono-tabla-mobile{
-     
-    }
-    
+  
 }

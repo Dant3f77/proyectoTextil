@@ -1,5 +1,5 @@
 <?php
-include_once('../templates/header.php');
+include_once('templates/header.php');
 ?>
 <style>
 .hidden {
@@ -7,8 +7,17 @@ include_once('../templates/header.php');
 }
 </style>
 <?php
+
 session_start();
-include_once('../templates/navbar.php');
+
+if (isset($_SESSION['solicitante'])) {
+    $solicitante = htmlspecialchars($_SESSION['solicitante']); // Obtener y sanitizar el valor de la sesión
+} else {
+    $solicitante = "No se recibió ningún solicitante.";
+}
+
+
+include_once('templates/navbar.php');
 $userName = $_SESSION['username'];
 
 // Verificar si el usuario está autenticado
@@ -19,30 +28,38 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 }
 ?>
 
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
 <div class="container mt-5 mb-3 ">
-    <h3 class="text-danger">SELECCIONE TIPO DE PIEZA Y TALLAS DE <b>CLIENTE</b></h3>
+    <h3 class="text-success">SELECCIONE TIPO DE PIEZA Y TALLAS DE <b><?php echo $solicitante; ?></b></h3>
     <br>
     <div class="row">
         <div class="col-12 col-md-4" >
-            <img src="../php/img/inversionesR.png" id="imgRobert" alt="" style="height: 600px; width: 400px;" class="">
-            <img src="../php/img/camisa.png" id="imgCamisa" alt="" style="height: 600px; width: 400px;" class="hidden">
-            <img src="../php/img/blusa.png" id="imgBlusa" alt="" style="height: 600px; width: 400px;" class="hidden">
-            <img src="../php/img/pantalon.png" id="imgPantalon" alt="" style="height: 600px; width: 400px;" class="hidden">
-            <img src="../php/img/falda.png" id="imgFalda" alt="" style="height: 600px; width: 400px;" class="hidden">
+            <img src="img/inversionesR.png" id="imgRobert" alt="" style="height: 600px; width: 400px;" class="">
+            <img src="img/camisa.png" id="imgCamisa" alt="" style="height: 600px; width: 400px;" class="hidden">
+            <img src="img/blusa.png" id="imgBlusa" alt="" style="height: 600px; width: 400px;" class="hidden">
+            <img src="img/pantalon.png" id="imgPantalon" alt="" style="height: 600px; width: 400px;" class="hidden">
+            <img src="img/falda.png" id="imgFalda" alt="" style="height: 600px; width: 400px;" class="hidden">
         </div>
 
         <div class="col-12 col-md-8">
 
             <br>
-            <form id="formTallas" action="../php/core.php" method="POST">
-            <div class="mb-3">
+            <form id="formTallas" action="" method="POST">
+            <div class="mb-3"><!--
                     <select class="form-select nombreCliente" aria-label="Default select example" id="nombreCliente">
                         <option selected>Cliente</option>
                         <option value="cl1">Daysi Santamaria</option>
                         <option value="cl2">Rogelio Torres</option>
                         <option value="cl3">Rogelio Torres</option>
 
-                    </select>
+                    </select>-->
+                    <h4 class="text-danger"> <b><?php echo $solicitante; ?> </b></h4>
+
+
                 </div>
 
                 <div class="mb-3">
@@ -104,15 +121,24 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Registar Tallas</button>
+                <button type="submit" class="btn btn-primary" onclick="showAlert()">Registar Tallas</button>
             </form>
+
+            
 
         </div>
     </div>
 </div>
 
 <script>
-    
+/*function showAlert() {
+    Swal.fire({
+  title: "TALLAS AGREGADAS!",
+  text: "Se agregaron Correctamente las tallas",
+  icon: "success"
+});
+        }*/
+   
 
 
 
@@ -241,4 +267,4 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 
 
 
-<?php include_once('../templates/footer.php') ?>
+<?php include_once('templates/footer.php') ?>

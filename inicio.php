@@ -1,8 +1,8 @@
 <?php
-include_once('../templates/header.php');
+include_once('templates/header.php');
 
 session_start();
-include_once('../templates/navbar.php');
+include_once('templates/navbar.php');
 $userName = $_SESSION['username'];
 
 // Verificar si el usuario está autenticado
@@ -19,8 +19,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
         <div class="col-4 ">
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Crear Pedido</h4>
-                <a href="">
-                <img src="../php/img/pedido.png" class="card-img-top" alt="...">
+                <a href="pedido.php">
+                <img src="img/pedido.png" class="card-img-top" alt="...">
                 </a>
             </div>
         </div>
@@ -30,7 +30,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Administrar Cliente</h4>
                 <a href="">
-                <img src="../php/img/administrarCliente.png" class="card-img-top" alt="...">
+                <img src="img/administrarCliente.png" class="card-img-top" alt="...">
                 </a>
             </div>
         </div>
@@ -39,7 +39,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Administrar Pedido</h4>
                 <a href="">
-                <img src="../php/img/editarPedido.png" class="card-img-top" alt="...">
+                <img src="img/editarPedido.png" class="card-img-top" alt="...">
                 </a>
             </div>
         </div>
@@ -56,7 +56,7 @@ if ($userName == "jefe" || $userName == "admin" )
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Graficos</h4>
                 <a href="">
-                <img src="../php/img/graficos.png" class="card-img-top" alt="...">
+                <img src="img/graficos.png" class="card-img-top" alt="...">
                 </a>
             </div>
         </div>
@@ -64,7 +64,7 @@ if ($userName == "jefe" || $userName == "admin" )
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Generar Reportes</h4>
                 <a href="">
-                <img src="../php/img/reporte.png" class="card-img-top" alt="...">
+                <img src="img/reporte.png" class="card-img-top" alt="...">
                 </a>
             </div>
         </div>
@@ -72,7 +72,7 @@ if ($userName == "jefe" || $userName == "admin" )
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Administrar Usuario</h4>
                 <a href="">
-                <img src="../php/img/administrarUsuario.png" class="card-img-top" alt="...">
+                <img src="img/administrarUsuario.png" class="card-img-top" alt="...">
                 </a>
             </div>
         </div>
@@ -86,4 +86,4 @@ if ($userName == "jefe" || $userName == "admin" )
 </div>
 
 
-<?php include_once('../templates/footer.php');
+<?php include_once('templates/footer.php');
