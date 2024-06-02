@@ -10,7 +10,7 @@ $pass = $_SESSION['pass'] ;
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
     //echo "Bienvenido, " . $_SESSION['username'] . "!";
 } else {
-    echo "No estás autorizado para ver esta página.";
+    header("Location: error.php");
 }
 ?>
 
@@ -34,13 +34,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-  <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
-  <div class="container-fluid">
-    <!-- <a class="navbar-brand" href="#">Bienvenido  <?php echo $_SESSION['username']; ?></a>-->
-    <h3 class="navbar-brand"> Bienvenido <b class="text-warning"> <?php echo $_SESSION['username']; ?> </b></h3>
-    <a href="logout.php" class="btn btn-danger">Cerrar sesión</a> <!-- Opción para cerrar sesión -->
-  </div>
-</nav>
+  <?php include('templates/navbar.php') ?>
 
 
 <div class="container">
@@ -59,7 +53,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
         <div class="col-4 ">
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Administrar Cliente</h4>
-                <a href="">
+                <a href="tomatalla.php">
                 <img src="img/administrarCliente.png" class="card-img-top" alt="...">
                 </a>
             </div>
@@ -68,7 +62,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
         <div class="col-4 ">
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Administrar Pedido</h4>
-                <a href="">
+                <a href="pedido.php">
                 <img src="img/editarPedido.png" class="card-img-top" alt="...">
                 </a>
             </div>
@@ -100,8 +94,8 @@ if ($userName == "jefe" || $userName == "admin" )
         </div>
         <div class="col-4 ">
             <div class="card text-center shadow " style="width: 15rem;">
-                <h4 class="card-title text-primary">Administrar Usuario</h4>
-                <a href="">
+                <h4 class="card-title text-primary">Administrar Empleado</h4>
+                <a href="empleado.php">
                 <img src="img/administrarUsuario.png" class="card-img-top" alt="...">
                 </a>
             </div>

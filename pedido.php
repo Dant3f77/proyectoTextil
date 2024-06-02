@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+$userName = $_SESSION['username'];
+$pass = $_SESSION['pass'];
+
+// Verificar si el usuario está autenticado
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+    //echo "Bienvenido, " . $_SESSION['username'] . "!";
+} else {
+    header("Location: error.php");
+}
+?>
 <!doctype html>
 <html lang="es">
 
@@ -23,6 +36,7 @@
         }
     </style>
 </head>
+<?php include('templates/navbar.php') ?>
 
 <body>
     <div class="banner">
@@ -32,7 +46,7 @@
         <div class="row w-100">
             <div class="col-md-3 d-flex justify-content-center">
                 <div class="card shadow" style="width: 20rem;">
-                    <img src="img/user.png" class="card-img-top" alt="error" style="width: 115px; height: 115px; margin: auto;">
+                    <img src="img/prePedido.png" class="card-img-top mt-1" alt="error" style="width: 115px; height: 130px; margin: auto;">
                     <div class="card-body">
                         <h5 class="card-title text-center">*REGISTRO DE PEDIDO*</h5>
                         <form id="form-pedido" class="form-horizontal" method="POST">
@@ -121,14 +135,26 @@
                     data: $(this).serialize(), // Serializa los datos del formulario
                     dataType: 'json',
                     success: function(response) {
-                        if(response.success) {
+                        Swal.fire({
+                                title: "Esta bien los datos?",
+                                showDenyButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: "Aceptar y Continuar",
+                                denyButtonText: `Revisar y seguir editando`
+                            }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+                                    Swal.fire("", "", "success");
+                                    if (response.success) {
                             // Muestra un alert
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Formulario enviado exitosamente!',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
+                             Swal.fire({
+                                 icon: 'success',
+                                 title: 'Formulario enviado exitosamente!',
+                                 showConfirmButton: false,
+                                 timer: 1500
+                             });
+
+                           
 
                             // Agrega la nueva fila a la DataTable
                             table.row.add([
@@ -151,6 +177,12 @@
                                 text: response.message
                             });
                         }
+                                    window.location.href = "tomaTalla.php";
+                                } else if (result.isDenied) {
+                                    Swal.fire("Seguir Editando", "", "info");
+                                }
+                            });
+                       
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         Swal.fire({

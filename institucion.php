@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+$userName = $_SESSION['username'];
+$pass = $_SESSION['pass'] ;
+
+// Verificar si el usuario está autenticado
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+    //echo "Bienvenido, " . $_SESSION['username'] . "!";
+} else {
+    header("Location: error.php");
+}
+?>
 <!doctype html>
 <html lang="es">
 
@@ -25,6 +38,7 @@
 </head>
 
 <body>
+<?php include('templates/navbar.php') ?>
     <div class="banner">
         PRE -REGISTRO DE TALLAS
     </div>
@@ -32,7 +46,7 @@
         <div class="row w-100">
             <div class="col-md-3 d-flex justify-content-center">
                 <div class="card shadow" style="width: 20rem;">
-                    <img src="img/user.png" class="card-img-top" alt="error" style="width: 115px; height: 115px; margin: auto;">
+                    <img src="img/cliente.png" class="card-img-top" alt="error" style="width: 115px; height: 115px; margin: auto;">
                     <div class="card-body">
                         <h5 class="card-title text-center">*REGISTRO DE PEDIDO*</h5>
                         <form id="form-pedido" class="form-horizontal" method="POST">

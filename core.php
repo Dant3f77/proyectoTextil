@@ -29,8 +29,8 @@ if (isset($_POST['username']) && isset($_POST['pass'])) {
         header("Location: inicio.php"); // Redirigir a una página de bienvenida
         exit; // Terminar el script para evitar ejecución adicional
     } else {
-        header("Location: inicio.php");
-        
+        header("Location: aviso.php");
+
         exit;
 
         /*$response = [

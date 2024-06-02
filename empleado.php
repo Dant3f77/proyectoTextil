@@ -1,3 +1,18 @@
+<?php
+
+
+session_start();
+
+$userName = $_SESSION['username'];
+$pass = $_SESSION['pass'] ;
+
+// Verificar si el usuario está autenticado
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+    //echo "Bienvenido, " . $_SESSION['username'] . "!";
+} else {
+    header("Location: error.php");
+}
+?>
 <!doctype html>
 <html lang="es">
 
@@ -27,6 +42,8 @@
 </head>
 
 <body>
+<?php include('templates/navbar.php') ?>
+
 <style>
     .container {
         max-width: 100%;

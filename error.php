@@ -10,8 +10,8 @@
 
 <script>
  Swal.fire({
-    title: 'UUPS.. HUBO UN PROBLEMA',
-    text: 'Usuario o Contraseña invalido',
+    title: 'PARA DONDE VAS???',
+    text: 'Acceso no permitido inicie sesion',
     icon: 'error', // Icono de la alerta (success, error, warning, info)
     confirmButtonText: 'Aceptar' // Texto del botón de confirmación
 }).then((result) => {
@@ -24,4 +24,3 @@
 </script>
 </body>
 </html>
-
