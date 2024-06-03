@@ -63,9 +63,9 @@ if (isset($_POST['form-empleado'])) {
         $pass = $_POST['pass'];
 
         $datosEmpleado = array(
-            "nombre_empleado" => $nombre_empleado,
+            "nombreEmpleado" => $nombre_empleado,
             "dui" => $dui,
-            "tipo_rol" => $tipo_rol,
+            "tipoRol" => $tipo_rol,
             "fecha" => $fecha,
             "telefono" => $telefono,
             "direccion" => $direccion,

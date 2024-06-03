@@ -121,60 +121,110 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
-        $(document).ready(function() {
-            // Inicializa DataTable
-            var table = $('#pedidosTable').DataTable();
+    $(document).ready(function() {
+    // Inicializa DataTable
+    var table = $('#empleadosTable').DataTable();
 
-            // Maneja el envío del formulario usando AJAX
-            $('#form-pedido').on('submit', function(e) {
-                e.preventDefault(); // Evita el envío normal del formulario
+    // Método para mostrar empleados
+    function cargarEmpleados() {
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:8080/api/empleados', // Reemplaza con la URL a tu script PHP
+            dataType: 'json',
+            contentType: 'application/json', 
+            success: function(response) {
+                console.log(response);
+                table.clear(); // Limpia la tabla antes de agregar los nuevos datos
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'core.php', // Reemplaza con la URL a tu script PHP
-                    data: $(this).serialize(), // Serializa los datos del formulario
-                    dataType: 'json',
-                    success: function(response) {
-                        if(response.success) {
-                            // Muestra un alert
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Formulario enviado exitosamente!',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
+                // Recorre el arreglo
+                response.forEach(data => {
+                    // Formatea la fecha
+                    var fecha = new Date(data.fecha);
+                    var dia = String(fecha.getDate()).padStart(2, '0');
+                    var mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                    var anio = fecha.getFullYear();
+                    var fechaFormateada = `${dia}-${mes}-${anio}`;
 
-                            // Agrega la nueva fila a la DataTable
-                            table.row.add([
-                                response.data.Institucion,
-                                response.data.cliente,
-                                response.data.tipo,
-                                response.data.entrega,
-                                response.data.telefono,
-                                response.data.nota,
-                                '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' +
-                                '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
-                            ]).draw(false);
-
-                            // Limpia el formulario
-                            $('#form-pedido')[0].reset();
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error al enviar el formulario',
-                                text: response.message
-                            });
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error en la solicitud AJAX',
-                            text: textStatus
-                        });
-                    }
+                    // Agrega la nueva fila a la DataTable
+                    table.row.add([
+                        data.nombreEmpleado,
+                        data.dui,
+                        data.tipoRol,
+                        fechaFormateada,
+                        data.telefono,
+                        data.direccion,
+                        data.nick,
+                        data.pass, 
+                        '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
+                        '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
+                    ]).draw(false);
                 });
-            });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error en la solicitud AJAX: ' + textStatus);
+            }
         });
+    }
+
+    // Carga inicial de empleados
+    cargarEmpleados();
+
+    // Método para agregar un nuevo empleado
+    $('#form-empleado').on('submit', function(e) {
+        e.preventDefault(); // Evita el envío normal del formulario
+
+        const formData = $(this).serializeArray();
+        const datos = {};
+        formData.forEach(item => {
+            datos[item.name] = item.value;
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:8080/api/empleados', // Reemplaza con la URL a tu script PHP
+            data: JSON.stringify(datos), // Serializa los datos del formulario
+            dataType: 'json',
+            contentType: 'application/json', 
+            success: function(response) {
+                console.log('Empleado registrado: ', response);
+
+                // Formatea la fecha
+                var fecha = new Date(response.fecha);
+                var dia = String(fecha.getDate()).padStart(2, '0');
+                var mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                var anio = fecha.getFullYear();
+                var fechaFormateada = `${dia}-${mes}-${anio}`;
+
+                // Muestra la alerta de éxito
+                Swal.fire({
+                    title: "Empleado Registrado",
+                    text: "Nombre: " + response.nombreEmpleado + "        Nick: " + response.nick,
+                    icon: "success"
+                });
+
+                // Agrega el nuevo empleado a la tabla
+                table.row.add([
+                    response.nombreEmpleado,
+                    response.dui,
+                    response.tipoRol,
+                    fechaFormateada,
+                    response.telefono,
+                    response.direccion,
+                    response.nick,
+                    response.pass,
+                    '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
+                    '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
+                ]).draw(false);
+
+                // Limpia el formulario
+                $('#form-empleado')[0].reset();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error en la solicitud AJAX: ' + textStatus);
+            }
+        });
+    });
+});
+
     </script>
     <?php include_once('templates/footer.php') ?>

@@ -4,7 +4,7 @@
 session_start();
 
 $userName = $_SESSION['username'];
-$pass = $_SESSION['pass'] ;
+$pass = $_SESSION['pass'];
 
 // Verificar si el usuario está autenticado
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
@@ -42,26 +42,26 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 </head>
 
 <body>
-<?php include('templates/navbar.php') ?>
+    <?php include('templates/navbar.php') ?>
 
-<style>
-    .container {
-        max-width: 100%;
-    }
+    <style>
+        .container {
+            max-width: 100%;
+        }
 
-    .table-responsive {
-        overflow-x: auto;
-    }
+        .table-responsive {
+            overflow-x: auto;
+        }
 
-    #empleadosTable_wrapper {
-        width: 100%;
-    }
-</style>
+        #empleadosTable_wrapper {
+            width: 100%;
+        }
+    </style>
 
 
 
     <div class="banner">
-        REGISTRO DE USUARIO
+        REGISTRO DE EMPLEADO
     </div>
     <div class="container mt-2 mb-3 d-flex flex-column justify-content-center align-items-center">
         <div class="row w-100">
@@ -71,11 +71,11 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                     <div class="card-body">
                         <h5 class="card-title text-center">*REGISTRO DE EMPLEADO*</h5>
                         <form id="form-empleado" class="form-horizontal" method="POST">
-                            <input type="hidden" name="form-empleado" value="1">
+
                             <div class="form-row">
                                 <div class="form-group col-md-12 mb-2">
                                     <label for="nombre_empleado">Nombre Empleado</label>
-                                    <input type="text" class="form-control" id="nombre_empleado" name="nombre_empleado" placeholder="Nombre Empleado" required>
+                                    <input type="text" class="form-control" id="nombreEmpleado" name="nombreEmpleado" placeholder="Nombre Empleado" required>
                                 </div>
                                 <div class="form-group col-md-12 mb-2">
                                     <label for="dui">DUI</label>
@@ -85,7 +85,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                             <div class="form-row">
                                 <div class="form-group col-md-12 mb-2">
                                     <label for="tipo_rol">Tipo Rol</label>
-                                    <input type="text" class="form-control" id="tipo_rol" name="tipo_rol" placeholder="Tipo Rol" required>
+                                    <input type="text" class="form-control" id="tipo_rol" name="tipoRol" placeholder="Tipo Rol" required>
                                 </div>
                                 <div class="form-group col-md-12 mb-2">
                                     <label for="fecha">Fecha</label>
@@ -150,47 +150,113 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
         </div><!-- fin de row -->
     </div><!-- fin de container -->
 
+
     <script>
         $(document).ready(function() {
-            // Inicializa DataTable
-            var table = $('#empleadosTable').DataTable();
+    // Inicializa DataTable
+    var table = $('#empleadosTable').DataTable();
 
-            // Maneja el envío del formulario usando AJAX
-            $('#form-empleado').on('submit', function(e) {
-                e.preventDefault(); // Evita el envío normal del formulario
+    // Método para mostrar empleados
+    function cargarEmpleados() {
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:8080/api/empleados', // Reemplaza con la URL a tu script PHP
+            dataType: 'json',
+            contentType: 'application/json', 
+            success: function(response) {
+                console.log(response);
+                table.clear(); // Limpia la tabla antes de agregar los nuevos datos
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'core.php', // Reemplaza con la URL a tu script PHP
-                    data: $(this).serialize(), // Serializa los datos del formulario
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            // Muestra un alert
-                            alert('Formulario enviado exitosamente!');
+                // Recorre el arreglo
+                response.forEach(data => {
+                    // Formatea la fecha
+                    var fecha = new Date(data.fecha);
+                    var dia = String(fecha.getDate()).padStart(2, '0');
+                    var mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                    var anio = fecha.getFullYear();
+                    var fechaFormateada = `${dia}-${mes}-${anio}`;
 
-                            // Agrega la nueva fila a la DataTable
-                            table.row.add([
-                                response.data.nombre_empleado,
-                                response.data.dui,
-                                response.data.tipo_rol,
-                                response.data.fecha,
-                                response.data.telefono,
-                                response.data.direccion,
-                                response.data.nick,
-                                response.data.pass,
-                                '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>'+'<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
-                            ]).draw(false);
-                        } else {
-                            alert('Error al enviar el formulario');
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Error en la solicitud AJAX: ' + textStatus);
-                    }
+                    // Agrega la nueva fila a la DataTable
+                    table.row.add([
+                        data.nombreEmpleado,
+                        data.dui,
+                        data.tipoRol,
+                        fechaFormateada,
+                        data.telefono,
+                        data.direccion,
+                        data.nick,
+                        data.pass, 
+                        '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
+                        '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
+                    ]).draw(false);
                 });
-            });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error en la solicitud AJAX: ' + textStatus);
+            }
         });
+    }
+
+    // Carga inicial de empleados
+    cargarEmpleados();
+
+    // Método para agregar un nuevo empleado
+    $('#form-empleado').on('submit', function(e) {
+        e.preventDefault(); // Evita el envío normal del formulario
+
+        const formData = $(this).serializeArray();
+        const datos = {};
+        formData.forEach(item => {
+            datos[item.name] = item.value;
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:8080/api/empleados', // Reemplaza con la URL a tu script PHP
+            data: JSON.stringify(datos), // Serializa los datos del formulario
+            dataType: 'json',
+            contentType: 'application/json', 
+            success: function(response) {
+                console.log( response);
+
+                // Formatea la fecha
+                var fecha = new Date(response.fecha);
+                var dia = String(fecha.getDate()).padStart(2, '0');
+                var mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                var anio = fecha.getFullYear();
+                var fechaFormateada = `${dia}-${mes}-${anio}`;
+
+                // Muestra la alerta de éxito
+                Swal.fire({
+                    title: "Empleado Registrado",
+                    text: "Nombre: " + response.nombreEmpleado + "        Nick: " + response.nick,
+                    icon: "success"
+                });
+
+                // Agrega el nuevo empleado a la tabla
+                table.row.add([
+                    response.nombreEmpleado,
+                    response.dui,
+                    response.tipoRol,
+                    fechaFormateada,
+                    response.telefono,
+                    response.direccion,
+                    response.nick,
+                    response.pass,
+                    '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
+                    '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
+                ]).draw(false);
+
+                // Limpia el formulario
+                $('#form-empleado')[0].reset();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error en la solicitud AJAX: ' + textStatus);
+            }
+        });
+    });
+});
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
