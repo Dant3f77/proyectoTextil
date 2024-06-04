@@ -50,25 +50,24 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                     <div class="card-body">
                         <h5 class="card-title text-center">*REGISTRO DE PEDIDO*</h5>
                         <form id="form-pedido" class="form-horizontal" method="POST">
-                            <input type="hidden" name="form-pedido" value="1">
                             <div class="form-row">
                                 <div class="form-group col-md-12 mb-2">
-                                    <label for="Institucion">Institución</label>
-                                    <input type="text" class="form-control" id="Institucion" name="Institucion" placeholder="Institución" required>
+                                    <label for="empleado">Empleado</label>
+                                    <input type="text" class="form-control" id="empleado" name="empleado" placeholder="empleado" required>
                                 </div>
                                 <div class="form-group col-md-12 mb-2">
-                                    <label for="cliente">Cliente</label>
-                                    <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Cliente" required>
+                                    <label for="nombreSolicitante">Cliente</label>
+                                    <input type="text" class="form-control" id="nombreSolicitante" name="nombreSolicitante" placeholder="Cliente" required>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12 mb-2">
-                                    <label for="tipo">Tipo</label>
+                                    <label for="tipo">Tipo Cliente</label>
                                     <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Tipo" required>
                                 </div>
                                 <div class="form-group col-md-12 mb-2">
-                                    <label for="entrega">Fecha de Entrega</label>
-                                    <input type="date" class="form-control" id="entrega" name="entrega" required>
+                                    <label for="fechaDeEntrega">Fecha de Entrega</label>
+                                    <input type="date" class="form-control" id="fechaDeEntrega" name="fechaDeEntrega" required>
                                 </div>
                                 <div class="form-group col-md-12 mb-2">
                                     <label for="telefono">Teléfono</label>
@@ -77,10 +76,14 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12 mb-2">
-                                    <label for="nota">Nota</label>
-                                    <textarea class="form-control" id="nota" name="nota" placeholder="Nota"></textarea>
+                                    <label for="descripcion">Nota</label>
+                                    <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Nota"></textarea>
                                 </div>
                             </div>
+                            <div class="form-group col-md-12 mb-2">
+                                    <label for="">Precio de Conjunto</label>
+                                    <input type="number" class="form-control" id="montoTotal" name="montoTotal" placeholder="Monto de Conjunto $$$$" required>
+                                </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12 text-end col-md-12">
                                     <button type="submit" class="btn btn-primary shadow-sm">
@@ -97,11 +100,12 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                     <table id="pedidosTable" class="table display table-hover table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>Institución</th>
+                                <th>Empleado</th>
                                 <th>Cliente</th>
-                                <th>Tipo</th>
-                                <th>Fecha de Entrega</th>
+                                <th>Tipo Cliente</th>
                                 <th>Teléfono</th>
+                                <th>Precio de Conjunto</th>
+                                <th>Fecha de Entrega</th>
                                 <th>Nota</th>
                                 <th>Acciones</th>
                             </tr>
@@ -125,74 +129,104 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
             // Inicializa DataTable
             var table = $('#pedidosTable').DataTable();
 
-            // Maneja el envío del formulario usando AJAX
-            $('#form-pedido').on('submit', function(e) {
-                e.preventDefault(); // Evita el envío normal del formulario
+    // Método para mostrar empleados
+    function cargarPedido() {
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:8080/api/pedidos', 
+            dataType: 'json',
+            contentType: 'application/json', 
+            success: function(response) {
+                console.log(response);
+                table.clear(); // Limpia la tabla antes de agregar los nuevos datos
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'core.php', // Reemplaza con la URL a tu script PHP
-                    data: $(this).serialize(), // Serializa los datos del formulario
-                    dataType: 'json',
-                    success: function(response) {
-                        Swal.fire({
-                                title: "Esta bien los datos?",
-                                showDenyButton: true,
-                                showCancelButton: true,
-                                confirmButtonText: "Aceptar y Continuar",
-                                denyButtonText: `Revisar y seguir editando`
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    Swal.fire("", "", "success");
-                                    if (response.success) {
-                            // Muestra un alert
-                             Swal.fire({
-                                 icon: 'success',
-                                 title: 'Formulario enviado exitosamente!',
-                                 showConfirmButton: false,
-                                 timer: 1500
-                             });
+                // Recorre el arreglo
+                response.forEach(data => {
+                    // Formatea la fecha
+                    var fecha = new Date(data.fechaDeEntrega);
+                    var dia = String(fecha.getDate()).padStart(2, '0');
+                    var mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                    var anio = fecha.getFullYear();
+                    var fechaFormateada = `${dia}-${mes}-${anio}`;
 
-                           
-
-                            // Agrega la nueva fila a la DataTable
-                            table.row.add([
-                                response.data.Institucion,
-                                response.data.cliente,
-                                response.data.tipo,
-                                response.data.entrega,
-                                response.data.telefono,
-                                response.data.nota,
-                                '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' +
-                                '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
-                            ]).draw(false);
-
-                            // Limpia el formulario
-                            $('#form-pedido')[0].reset();
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error al enviar el formulario',
-                                text: response.message
-                            });
-                        }
-                                    window.location.href = "tomaTalla.php";
-                                } else if (result.isDenied) {
-                                    Swal.fire("Seguir Editando", "", "info");
-                                }
-                            });
-                       
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error en la solicitud AJAX',
-                            text: textStatus
-                        });
-                    }
+                    // Agrega la nueva fila a la DataTable
+                    table.row.add([
+                        data.empleado.idEmpleado,
+                        data.nombreSolicitante,
+                        data.tipo,
+                        data.telefono,
+                        data.montoTotal,
+                        fechaFormateada,
+                        data.descripcion,
+                        '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
+                        '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
+                    ]).draw(false);
                 });
-            });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error en la solicitud AJAX NO MUESTRA PEDIDO: ' + textStatus);
+            }
         });
+    }
+
+    // Carga inicial de empleados
+    cargarPedido();
+
+    // Método para agregar un nuevo empleado
+    $('#form-pedido').on('submit', function(e) {
+        e.preventDefault(); // Evita el envío normal del formulario
+
+        const formData = $(this).serializeArray();
+        const datos = {};
+        formData.forEach(item => {
+            datos[item.name] = item.value;
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:8080/api/pedidos', 
+            data: JSON.stringify(datos), // Serializa los datos del formulario
+            dataType: 'json',
+            contentType: 'application/json', 
+            success: function(response) {
+                console.log('holamundo');
+                console.log( response);
+
+                // Formatea la fecha
+                var fecha = new Date(response.fechaDeEntrega);
+                var dia = String(fecha.getDate()).padStart(2, '0');
+                var mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                var anio = fecha.getFullYear();
+                var fechaFormateada = `${dia}-${mes}-${anio}`;
+
+                // Muestra la alerta de éxito
+                Swal.fire({
+                    title: "Pedido Registrado",
+                    text: "Del cliente: " + response.nombreSolicitante + "       Creado por Nick: " + response.empleado.idEmpleado,
+                    icon: "success"
+                });
+
+                // Agrega el nuevo empleado a la tabla
+                table.row.add([
+                    response.empleado,
+                    response.descripcion,
+                    fechaFormateada,
+                    response.montoTotal,
+                    response.nombreSolicitante,
+                    response.tipo,
+                    response.telefono,
+                    '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
+                    '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
+                ]).draw(false);
+
+                // Limpia el formulario
+                $('#form-pedido')[0].reset();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error en la solicitud AJAX: ' + textStatus);
+            }
+        });
+    });
+});
     </script>
     <?php include_once('templates/footer.php') ?>

@@ -130,15 +130,11 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                     <table id="empleadosTable" class="table display table-hover table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>Nombre Empleado</th>
-                                <th>DUI</th>
-                                <th>Tipo Rol</th>
-                                <th>Fecha</th>
-                                <th>Teléfono</th>
-                                <th>Dirección</th>
-                                <th>Nick</th>
-                                <th>Contraseña</th>
-                                <th>Acciones</th>
+                                <th>Numero Pedido</th>
+                                <th>Monto</th>
+                                <th>Fecha de Toma de Talla</th>
+                                <th>Cliente</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -160,7 +156,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
     function cargarEmpleados() {
         $.ajax({
             type: 'GET',
-            url: 'http://localhost:8080/api/empleados', 
+            url: 'http://localhost:8080/api/detallePedido', 
             dataType: 'json',
             contentType: 'application/json', 
             success: function(response) {
@@ -170,7 +166,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                 // Recorre el arreglo
                 response.forEach(data => {
                     // Formatea la fecha
-                    var fecha = new Date(data.fecha);
+                    var fecha = new Date(data.fechaDeTomaDeTalla);
                     var dia = String(fecha.getDate()).padStart(2, '0');
                     var mes = String(fecha.getMonth() + 1).padStart(2, '0');
                     var anio = fecha.getFullYear();
@@ -178,14 +174,10 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 
                     // Agrega la nueva fila a la DataTable
                     table.row.add([
-                        data.nombreEmpleado,
-                        data.dui,
-                        data.tipoRol,
-                        fechaFormateada,
-                        data.telefono,
-                        data.direccion,
-                        data.nick,
-                        data.pass, 
+                        data.idPedido,
+                        data.monto,
+                        data.fechaDeTomaDeTalla,
+                        data.clienteIdCliente,
                         '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
                         '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
                     ]).draw(false);
