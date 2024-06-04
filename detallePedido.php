@@ -127,7 +127,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
             </div><!-- fin de col -->
             <div class="col-md-9">
                 <div class="table-responsive m-2">
-                    <table id="empleadosTable" class="table display table-hover table-striped table-bordered">
+                    <table id="detalleTable" class="table display table-hover table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Numero Pedido</th>
@@ -150,10 +150,10 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
     <script>
         $(document).ready(function() {
     // Inicializa DataTable
-    var table = $('#empleadosTable').DataTable();
+    var table = $('#detalleTable').DataTable();
 
     // Método para mostrar empleados
-    function cargarEmpleados() {
+    function cargarDetallePedido() {
         $.ajax({
             type: 'GET',
             url: 'http://localhost:8080/api/detallePedido', 
@@ -190,7 +190,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
     }
 
     // Carga inicial de empleados
-    cargarEmpleados();
+    cargarDetallePedido();
 
     // Método para agregar un nuevo empleado
     $('#form-empleado').on('submit', function(e) {

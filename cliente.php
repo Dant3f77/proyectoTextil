@@ -79,7 +79,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                                 </div>
                             <div class="mb-3">
                             <label for="metodoPago">Modo Pago</label>
-                        <select class="form-select nombreCliente" aria-label="Default select example" name="metodoPago" id="`metodoPago" >
+                        <select class="form-select" aria-label="Default select example" name="metodoPago" id="metodoPago" >
                             <option selected>modo pago</option>
                             <option value="1">Efectivo</option>
                             <option value="2">Tarjeta</option>
@@ -169,13 +169,26 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
             datos[item.name] = item.value;
         });
 
+        let datosFormulario = {
+                    nombres: $('#nombres').val(),
+                    identificacion: $('#identificacion').val(),
+                    telefono: $('#telefono').val(),
+                    edad: parseInt($('#edad').val(), 10),
+                    metodoPago: {
+                        idPago: parseInt($('#metodoPago').val(), 10),
+                      
+                    }
+                };
+
+
         $.ajax({
             type: 'POST',
             url: 'http://localhost:8080/api/clientes', 
-            data: JSON.stringify(datos), // Serializa los datos del formulario
+            data: JSON.stringify(datosFormulario), // Serializa los datos del formulario
             dataType: 'json',
             contentType: 'application/json', 
             success: function(response) {
+
                 console.log('cliente registrado: ', response);
 
                 // Muestra la alerta de éxito
@@ -191,7 +204,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                     response.identificacion,
                     response.telefono,
                     response.edad,
-                    response.metodoPago,                    
+                    response.metodoPago,
                     '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
                     '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
                 ]).draw(false);
