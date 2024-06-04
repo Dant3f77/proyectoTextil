@@ -226,8 +226,8 @@ if (isset($_SESSION['user']) ) {
 
             } else if (this.value === 'pantalonVestir' || this.value === 'pantalonJeans') {
                 textPantalon.textContent = 'Medida Pantalon';
-                pantalon.style.display = 'block';
                 camisa.style.display = 'none';
+                pantalon.style.display = 'block';
                 document.getElementById('imgCamisa').classList.add('hidden');
                 document.getElementById('imgRobert').classList.remove('hidden');
                 document.getElementById('imgBlusa').classList.remove('hidden');
