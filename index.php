@@ -86,6 +86,9 @@
                                         <div class="pt-1 mb-1">
                                             <input data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit" type="button" value="Iniciar Sesión">
                                         </div>
+                                        <?php if (isset($_GET['error'])) {
+                                        echo "<p style='color:red;'>Invalid credentials</p>";
+                                        } ?>
                                     </form>
 
                                 </div>
@@ -97,7 +100,7 @@
         </div>
     </section>
 
-   
+
 
 
 

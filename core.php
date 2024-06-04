@@ -8,8 +8,42 @@ $response = array();
 // Verificar si se recibieron datos de usuario y contraseña
 if (isset($_POST['username']) && isset($_POST['pass'])) {
 
+$nick = $_POST['username'];
+$password = $_POST['pass'];
+
+$api_url = 'localhost:8080/api/empleados'; // Reemplaza con la URL real de tu API
+
+// Función para hacer una solicitud a la API
+function fetchAPI($url) {
+    $curl = curl_init($url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($curl);
+    curl_close($curl);
+    return json_decode($response, true);
+}
+
+$users = fetchAPI($api_url);
+
+//print_r($users);
+
+$authenticated = false;
+
+foreach ($users as $user) {
+    if ($user['nick'] == $nick && $user['pass'] == $password) {
+        $_SESSION['user'] = $user;
+        $authenticated = true;
+        break;
+    }
+}
+
+if ($authenticated) {
+    header('Location: inicio.php');
+} else {
+    header('Location: index.php?error=1');
+}
+
     // Lista de usuarios y contraseñas
-    $users = [
+  /*  $users = [
         'admin' => '123456',
         'empleado' => 'abc123',
         'jefe' => 'jef123'
@@ -44,7 +78,7 @@ if (isset($_POST['username']) && isset($_POST['pass'])) {
         // Enviar el JSON de vuelta al cliente
         echo $json_response;*/
         
-    }
+  //  }
 
     exit;
 }

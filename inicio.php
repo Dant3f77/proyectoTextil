@@ -3,12 +3,11 @@
 
 session_start();
 
-$userName = $_SESSION['username'];
-$pass = $_SESSION['pass'] ;
 
 // Verificar si el usuario está autenticado
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+if (isset($_SESSION['user']) ) {
     //echo "Bienvenido, " . $_SESSION['username'] . "!";
+    $user = $_SESSION['user']['tipoRol'];
 } else {
     header("Location: error.php");
 }
@@ -53,7 +52,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
         <div class="col-4 ">
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Administrar Cliente</h4>
-                <a href="tomatalla.php">
+                <a href="cliente.php">
                 <img src="img/administrarCliente.png" class="card-img-top" alt="...">
                 </a>
             </div>
@@ -71,7 +70,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 
     </div>
 <?php 
-if ($userName == "jefe" || $userName == "admin" )
+if ($user == "jefe" || $user == "administrador" )
 {
 ?>
     <div class="row m-5">

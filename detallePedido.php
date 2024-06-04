@@ -2,13 +2,10 @@
 
 
 session_start();
-
-$userName = $_SESSION['username'];
-$pass = $_SESSION['pass'];
-
 // Verificar si el usuario está autenticado
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+if (isset($_SESSION['user']) ) {
     //echo "Bienvenido, " . $_SESSION['username'] . "!";
+    $user = $_SESSION['user']['tipoRol'];
 } else {
     header("Location: error.php");
 }
