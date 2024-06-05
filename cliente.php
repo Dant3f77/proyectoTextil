@@ -2,7 +2,7 @@
 session_start();
 
 // Verificar si el usuario está autenticado
-if (isset($_SESSION['user']) ) {
+if (isset($_SESSION['user'])) {
     //echo "Bienvenido, " . $_SESSION['username'] . "!";
     $user = $_SESSION['user']['tipoRol'];
 } else {
@@ -19,7 +19,7 @@ if (isset($_SESSION['user']) ) {
     <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
@@ -42,7 +42,7 @@ if (isset($_SESSION['user']) ) {
 </head>
 
 <body>
-<?php include('templates/navbar.php') ?>
+    <?php include('templates/navbar.php') ?>
     <div class="banner">
         REGISTRO DE CLIENTE
     </div>
@@ -71,18 +71,18 @@ if (isset($_SESSION['user']) ) {
                                 </div>
                             </div>
                             <div class="form-row">
-                            <div class="form-group col-md-12 mb-2">
+                                <div class="form-group col-md-12 mb-2">
                                     <label for="edad">Edad</label>
                                     <input type="number" class="form-control" id="edad" name="edad" placeholder="Cliente" required>
                                 </div>
-                            <div class="mb-3">
-                            <label for="metodoPago">Modo Pago</label>
-                        <select class="form-select" aria-label="Default select example" name="metodoPago" id="metodoPago" >
-                            <option selected>modo pago</option>
-                            <option value="1">Efectivo</option>
-                            <option value="2">Tarjeta</option>
-                        </select>
-                    </div>                          
+                                <div class="mb-3">
+                                    <label for="metodoPago">Modo Pago</label>
+                                    <select class="form-select" aria-label="Default select example" name="metodoPago" id="metodoPago">
+                                        <option selected>modo pago</option>
+                                        <option value="1">Efectivo</option>
+                                        <option value="2">Tarjeta</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12 text-end col-md-12">
@@ -118,104 +118,121 @@ if (isset($_SESSION['user']) ) {
     </div><!-- fin de container -->
 
     <script>
-    $(document).ready(function() {
-    // Inicializa DataTable
-    var table = $('#clientesTable').DataTable();
+        //Delete Cliente
+        function deleteClient(button) {
+            var clientId = $(button).data('id');
+            $.ajax({
+                url: `http://localhost:8080/api/clientes/${clientId}`,
+                type: 'DELETE',
+                success: function(result) {
+                    // Manejar el éxito de la eliminación
+                    console.log('Cliente eliminado:', result);
+                    var table = $('#clientesTable').DataTable();
+                    var row = $(button).closest('tr');
+                    table.row(row).remove().draw();
+                },
+                error: function(xhr, status, error) {
+                    // Manejar el error de la eliminación
+                    console.error('Error al eliminar cliente:', error);
+                }
+            });
+        }
+        $(document).ready(function() {
+            // Inicializa DataTable
+            var table = $('#clientesTable').DataTable();
 
-    // Método para mostrar clientes
-    function cargarClientes() {
-        $.ajax({
-            type: 'GET',
-            url: 'http://localhost:8080/api/clientes', 
-            dataType: 'json',
-            contentType: 'application/json', 
-            success: function(response) {
-                console.log(response);
-                table.clear(); // Limpia la tabla antes de agregar los nuevos datos
-                    
-                // Recorre el arreglo
-                response.forEach(data => {
-                   
-                    // Agrega la nueva fila a la DataTable
-                    table.row.add([
-                        data.nombres,
-                        data.identificacion,
-                        data.telefono,
-                        data.edad,
-                        data.metodoPago.idPago,
-                        '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
-                    '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
-                    ]).draw(false);
+            // Método para mostrar clientes
+            function cargarClientes() {
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:8080/api/clientes',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(response) {
+                        console.log(response);
+                        table.clear(); // Limpia la tabla antes de agregar los nuevos datos
+
+                        // Recorre el arreglo
+                        response.forEach(data => {
+
+                            // Agrega la nueva fila a la DataTable
+                            table.row.add([
+                                data.nombres,
+                                data.identificacion,
+                                data.telefono,
+                                data.edad,
+                                data.metodoPago.idPago,
+                                `<button data-id="${data?.idCliente}" class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>` +
+                                ` <button data-id="${data?.idCliente}" class="btn m-2 btn-danger btn-sm delete-cliente" onclick="deleteClient(this)"><i class="bi bi-trash-fill"></i></button>`
+                            ]).draw(false);
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error en la solicitud AJAX: ' + textStatus);
+                    }
                 });
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Error en la solicitud AJAX: ' + textStatus);
             }
-        });
-    }
 
-    // Carga inicial de clientes
-    cargarClientes();
+            // Carga inicial de clientes
+            cargarClientes();
 
-    // Método para agregar un nuevo clientes
-    $('#form-cliente').on('submit', function(e) {
-        e.preventDefault(); // Evita el envío normal del formulario
+            // Método para agregar un nuevo clientes
+            $('#form-cliente').on('submit', function(e) {
+                e.preventDefault(); // Evita el envío normal del formulario
 
-        const formData = $(this).serializeArray();
-        const datos = {};
-        formData.forEach(item => {
-            datos[item.name] = item.value;
-        });
+                const formData = $(this).serializeArray();
+                const datos = {};
+                formData.forEach(item => {
+                    datos[item.name] = item.value;
+                });
 
-        let datosFormulario = {
+                let datosFormulario = {
                     nombres: $('#nombres').val(),
                     identificacion: $('#identificacion').val(),
                     telefono: $('#telefono').val(),
                     edad: parseInt($('#edad').val(), 10),
                     metodoPago: {
                         idPago: parseInt($('#metodoPago').val(), 10),
-                      
                     }
-                };
+                };
 
 
-        $.ajax({
-            type: 'POST',
-            url: 'http://localhost:8080/api/clientes', 
-            data: JSON.stringify(datosFormulario), // Serializa los datos del formulario
-            dataType: 'json',
-            contentType: 'application/json', 
-            success: function(response) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:8080/api/clientes',
+                    data: JSON.stringify(datosFormulario), // Serializa los datos del formulario
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(response) {
 
-                console.log('cliente registrado: ', response);
+                        console.log('cliente registrado: ', response);
 
-                // Muestra la alerta de éxito
-                Swal.fire({
-                    title: "cliente Registrado",
-                    text: "Nombre: " + response.nombres + "        Identificacion: " + response.identificacion,
-                    icon: "success"
+                        // Muestra la alerta de éxito
+                        Swal.fire({
+                            title: "cliente Registrado",
+                            text: "Nombre: " + response.nombres + "        Identificacion: " + response.identificacion,
+                            icon: "success"
+                        });
+
+                        // Agrega el nuevo cliente a la tabla
+                        table.row.add([
+                            response.nombres,
+                            response.identificacion,
+                            response.telefono,
+                            response.edad,
+                            response.metodoPago,
+                            `<button data-id="${response?.idCliente}" class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>` +
+                            ` <button data-id="${response?.idCliente}" class="btn m-2 btn-danger btn-sm delete-cliente" onclick="deleteClient(this)"><i class="bi bi-trash-fill"></i></button>`
+                        ]).draw(false);
+
+                        // Limpia el formulario
+                        $('#form-cliente')[0].reset();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error en la solicitud AJAX: ' + textStatus);
+                    }
                 });
-
-                // Agrega el nuevo cliente a la tabla
-                table.row.add([
-                    response.nombres,
-                    response.identificacion,
-                    response.telefono,
-                    response.edad,
-                    response.metodoPago,
-                    '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
-                    '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
-                ]).draw(false);
-
-                // Limpia el formulario
-                $('#form-cliente')[0].reset();
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Error en la solicitud AJAX: ' + textStatus);
-            }
+            });
         });
-    });
-});
-
     </script>
     <?php include_once('templates/footer.php') ?>
