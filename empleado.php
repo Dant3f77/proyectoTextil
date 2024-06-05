@@ -150,6 +150,24 @@ if (isset($_SESSION['user']) ) {
 
 
     <script>
+        function deleteEmpleado(button) {
+            var empleadoId = $(button).data('id');
+            $.ajax({
+                url: `http://localhost:8080/api/empleados/${empleadoId}`,
+                type: 'DELETE',
+                success: function(result) {
+                    // Manejar el éxito de la eliminación
+                    console.log('Empleado eliminado:', result);
+                    var table = $('#empleadosTable').DataTable();
+                    var row = $(button).closest('tr');
+                    table.row(row).remove().draw();
+                },
+                error: function(xhr, status, error) {
+                    // Manejar el error de la eliminación
+                    console.error('Error al eliminar cliente:', error);
+                }
+            });
+        }
         $(document).ready(function() {
     // Inicializa DataTable
     var table = $('#empleadosTable').DataTable();
@@ -184,8 +202,8 @@ if (isset($_SESSION['user']) ) {
                         data.direccion,
                         data.nick,
                         data.pass, 
-                        '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
-                        '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
+                        `<button data-id="${data?.idEmpleado}" class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>` + 
+                        `<button data-id="${data?.idEmpleado}" class="btn m-2 btn-danger btn-sm" onclick="deleteEmpleado(this)"><i class="bi bi-trash-fill"></i></button>`
                     ]).draw(false);
                 });
             },
@@ -241,8 +259,8 @@ if (isset($_SESSION['user']) ) {
                     response.direccion,
                     response.nick,
                     response.pass,
-                    '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' + 
-                    '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
+                    `<button data-id="${response?.idEmpleado}" class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>` + 
+                    `<button data-id="${response?.idEmpleado}" class="btn m-2 btn-danger btn-sm" onclick="deleteEmpleado(this)"w><i class="bi bi-trash-fill"></i></button>`
                 ]).draw(false);
 
                 // Limpia el formulario
