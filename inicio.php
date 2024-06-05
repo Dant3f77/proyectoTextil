@@ -86,7 +86,7 @@ if ($user == "jefe" || $user == "administrador" )
         <div class="col-4 ">
             <div class="card text-center shadow " style="width: 15rem;">
                 <h4 class="card-title text-primary">Generar Reportes</h4>
-                <a href="">
+                <a href="dashboard.php">
                 <img src="img/reporte.png" class="card-img-top" alt="...">
                 </a>
             </div>

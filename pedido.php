@@ -155,8 +155,8 @@ if (isset($_SESSION['user'])) {
                                                 <br>
 
                                                 <button type="button" class="btn btn-danger" onclick="eliminarDetalle(this)"><i class="bi bi-trash-fill"></i> Eliminar</button>
-                                                <button type="submit" class="btn btn-success"> <i class="bi bi-send-plus-fill"></i> Enviar</button>
-                                                <button type="button" class="btn btn-primary" onclick="agregarDetalle()"><i class="bi bi-person-fill-add"></i> Agregar Detalle</button><br><br>
+                                                <button type="submit" class="btn btn-primary"> <i class="bi bi-send-plus-fill"></i> Enviar</button>
+                                                <button type="button" class="btn btn-success" onclick="agregarDetalle()"><i class="bi bi-person-fill-add"></i> Agregar Detalle</button><br><br>
 
 
 
@@ -397,7 +397,7 @@ if (isset($_SESSION['user'])) {
                     success: function(response) {
                         console.log(response);
                         table.clear(); // Limpia la tabla antes de agregar los nuevos datos
-
+                        
                         // Recorre el arreglo
                         response.forEach(data => {
                             // Formatea la fecha
@@ -416,6 +416,8 @@ if (isset($_SESSION['user'])) {
                                 data.montoTotal,
                                 fechaFormateada,
                                 data.descripcion,
+                                `<button class="btn btn-success m-2 btn-sm ver-pedidos" data-id="${data.idPedido}">
+                                <i class="bi bi-binoculars-fill"></i> Pedidos</button>` +
                                 '<button class="btn btn-warning m-2 btn-sm"><i class="bi bi-pencil-square"></i></button>' +
                                 '<button class="btn m-2 btn-danger btn-sm"><i class="bi bi-trash-fill"></i></button>'
                             ]).draw(false);
@@ -427,6 +429,11 @@ if (isset($_SESSION['user'])) {
                 });
             }
 
+            //funcion click para ir a detalles pedido
+            $(document).on('click', '.ver-pedidos', function() {
+                var idPedido = $(this).data('id');
+                window.location.href = `detallePedido.php?id=${idPedido}`;
+            });
             // Carga inicial de empleados
             cargarPedido();
 
